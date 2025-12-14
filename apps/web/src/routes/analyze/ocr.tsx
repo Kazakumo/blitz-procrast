@@ -1,3 +1,4 @@
+import { ocr } from "@/lib/ocr";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -9,7 +10,8 @@ function RouteComponent() {
 	// TODO: 画像をアップロードできるようにして、ボタンを押すとocrかける
 	// ocrをかけたデータを表示する
 	const [image, setImage] = useState<File>();
-	const [url, setUrl] = useState<string>("");
+	const [url, setUrl] = useState<string>(""); 
+	const [readText, setReadText] = useState<string>("")
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		if (
 			e.target.files !== undefined &&
@@ -23,7 +25,10 @@ function RouteComponent() {
 	};
 	async function handleClick() {
 		console.log(url);
-		//TODO: ocrする
+		if (!image) return
+		const text = await ocr(image)
+
+		setReadText(text)
 	}
 
 	return (
@@ -37,6 +42,8 @@ function RouteComponent() {
 			<button type="button" onClick={() => handleClick()}>
 				OCR
 			</button>
+
+			<text>{readText}</text>
 		</>
 	);
 }
